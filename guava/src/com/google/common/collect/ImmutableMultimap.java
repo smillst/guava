@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 
@@ -64,6 +68,7 @@ import javax.annotation.Nullable;
  * @author Jared Levy
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
 public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
     implements Serializable {
@@ -352,7 +357,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
    */
   @Deprecated
   @Override
-  public ImmutableCollection<V> removeAll(Object key) {
+  public ImmutableCollection<V> removeAll(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     throw new UnsupportedOperationException();
   }
 
@@ -442,7 +447,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
    */
   @Deprecated
   @Override
-  public boolean remove(Object key, Object value) {
+  public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key, /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object value) {
     throw new UnsupportedOperationException();
   }
 
@@ -458,16 +463,19 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
 
   // accessors
 
+  @Pure
   @Override
-  public boolean containsKey(@Nullable Object key) {
+  public boolean containsKey(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return map.containsKey(key);
   }
 
+  @Pure
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  public boolean containsValue(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object value) {
     return value != null && super.containsValue(value);
   }
 
+  @Pure
   @Override
   public int size() {
     return size;
@@ -479,6 +487,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
    * Returns an immutable set of the distinct keys in this multimap, in the same
    * order as they appear in this multimap.
    */
+  @SideEffectFree
   @Override
   public ImmutableSet<K> keySet() {
     return map.keySet();
@@ -503,6 +512,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   /**
    * Returns an immutable collection of all key-value pairs in the multimap.
    */
+  @SideEffectFree
   @Override
   public ImmutableCollection<Entry<K, V>> entries() {
     return (ImmutableCollection<Entry<K, V>>) super.entries();
@@ -514,7 +524,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   private static class EntryCollection<K, V> extends ImmutableCollection<Entry<K, V>> {
-    @Weak final ImmutableMultimap<K, V> multimap;
+    /*@Weak*/ final ImmutableMultimap<K, V> multimap;
 
     EntryCollection(ImmutableMultimap<K, V> multimap) {
       this.multimap = multimap;
@@ -530,13 +540,15 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
       return multimap.isPartialView();
     }
 
+    @Pure
     @Override
     public int size() {
       return multimap.size();
     }
 
+    @Pure
     @Override
-    public boolean contains(Object object) {
+    public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
       if (object instanceof Entry) {
         Entry<?, ?> entry = (Entry<?, ?>) object;
         return multimap.containsEntry(entry.getKey(), entry.getValue());
@@ -599,12 +611,12 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   @WeakOuter
   class Keys extends ImmutableMultiset<K> {
     @Override
-    public boolean contains(@Nullable Object object) {
+    public boolean contains(/*@Nullable*/ Object object) {
       return containsKey(object);
     }
 
     @Override
-    public int count(@Nullable Object element) {
+    public int count(/*@Nullable*/ Object element) {
       Collection<V> values = map.get(element);
       return (values == null) ? 0 : values.size();
     }
@@ -636,6 +648,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
    * iterator traverses the values for the first key, the values for the second
    * key, and so on.
    */
+  @SideEffectFree
   @Override
   public ImmutableCollection<V> values() {
     return (ImmutableCollection<V>) super.values();
@@ -657,14 +670,14 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   private static final class Values<K, V> extends ImmutableCollection<V> {
-    @Weak private final transient ImmutableMultimap<K, V> multimap;
+    /*@Weak*/ private final transient ImmutableMultimap<K, V> multimap;
 
     Values(ImmutableMultimap<K, V> multimap) {
       this.multimap = multimap;
     }
 
     @Override
-    public boolean contains(@Nullable Object object) {
+    public boolean contains(/*@Nullable*/ Object object) {
       return multimap.containsValue(object);
     }
 
@@ -682,6 +695,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
       return offset;
     }
 
+    @Pure
     @Override
     public int size() {
       return multimap.size();
@@ -696,4 +710,8 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   private static final long serialVersionUID = 0;
+
+public boolean containsEntry(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0, /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg1) { return super.containsEntry(arg0, arg1); }
+
+public boolean equals(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
 }

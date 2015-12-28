@@ -199,7 +199,7 @@ public abstract class FluentIterable<E> implements Iterable<E> {
    * <p><b>{@code Stream} equivalent:</b> {@code stream.anyMatch(Predicate.isEqual(target))}.
    */
   @CheckReturnValue
-  public final boolean contains(@Nullable Object target) {
+  public final boolean contains(/*@Nullable*/ Object target) {
     return Iterables.contains(iterable, target);
   }
 

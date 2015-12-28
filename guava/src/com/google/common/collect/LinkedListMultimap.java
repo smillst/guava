@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.CollectPreconditions.checkRemove;
@@ -99,8 +103,9 @@ import javax.annotation.Nullable;
  * @author Mike Bostock
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
-public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
+public class LinkedListMultimap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends AbstractMultimap<K, V>
     implements ListMultimap<K, V>, Serializable {
   /*
    * Order is maintained using a linked list containing all key-value pairs. In
@@ -117,7 +122,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
     Node<K, V> nextSibling; // the next node with the same key
     Node<K, V> previousSibling; // the previous node with the same key
 
-    Node(@Nullable K key, @Nullable V value) {
+    Node(/*@Nullable*/ K key, /*@Nullable*/ V value) {
       this.key = key;
       this.value = value;
     }
@@ -133,7 +138,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
     }
 
     @Override
-    public V setValue(@Nullable V newValue) {
+    public V setValue(/*@Nullable*/ V newValue) {
       V result = value;
       this.value = newValue;
       return result;
@@ -154,8 +159,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
     }
   }
 
-  private transient Node<K, V> head; // the head for all keys
-  private transient Node<K, V> tail; // the tail for all keys
+  private transient /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> head; // the head for all keys
+  private transient /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> tail; // the tail for all keys
   private transient Map<K, KeyList<K, V>> keyToKeyList;
   private transient int size;
 
@@ -216,7 +221,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * nextSibling} is null. Note: if {@code nextSibling} is specified, it MUST be
    * for an node for the same {@code key}!
    */
-  private Node<K, V> addNode(@Nullable K key, @Nullable V value, @Nullable Node<K, V> nextSibling) {
+  private Node<K, V> addNode(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ K key, /*@Nullable*/ V value, /*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> nextSibling) {
     Node<K, V> node = new Node<K, V>(key, value);
     if (head == null) { // empty list
       head = tail = node;
@@ -301,12 +306,12 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   /** Removes all nodes for the specified key. */
-  private void removeAllNodes(@Nullable Object key) {
+  private void removeAllNodes(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     Iterators.clear(new ValueForKeyIterator(key));
   }
 
   /** Helper method for verifying that an iterator element is present. */
-  private static void checkElement(@Nullable Object node) {
+  private static void checkElement(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object node) {
     if (node == null) {
       throw new NoSuchElementException();
     }
@@ -315,8 +320,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   /** An {@code Iterator} over all nodes. */
   private class NodeIterator implements ListIterator<Entry<K, V>> {
     int nextIndex;
-    Node<K, V> next;
-    Node<K, V> current;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> next;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> current;
     Node<K, V> previous;
     int expectedModCount = modCount;
 
@@ -420,8 +425,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   /** An {@code Iterator} over distinct keys in key head order. */
   private class DistinctKeyIterator implements Iterator<K> {
     final Set<K> seenKeys = Sets.<K>newHashSetWithExpectedSize(keySet().size());
-    Node<K, V> next = head;
-    Node<K, V> current;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> next = head;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> current;
     int expectedModCount = modCount;
 
     private void checkForConcurrentModification() {
@@ -460,14 +465,14 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   /** A {@code ListIterator} over values for a specified key. */
   private class ValueForKeyIterator implements ListIterator<V> {
-    final Object key;
+    final /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key;
     int nextIndex;
-    Node<K, V> next;
-    Node<K, V> current;
-    Node<K, V> previous;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> next;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> current;
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ Node<K, V> previous;
 
     /** Constructs a new iterator over all values for the specified key. */
-    ValueForKeyIterator(@Nullable Object key) {
+    ValueForKeyIterator(/*@Nullable*/ Object key) {
       this.key = key;
       KeyList<K, V> keyList = keyToKeyList.get(key);
       next = (keyList == null) ? null : keyList.head;
@@ -482,7 +487,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
      *
      * @throws IndexOutOfBoundsException if index is invalid
      */
-    public ValueForKeyIterator(@Nullable Object key, int index) {
+    public ValueForKeyIterator(/*@Nullable*/ Object key, int index) {
       KeyList<K, V> keyList = keyToKeyList.get(key);
       int size = (keyList == null) ? 0 : keyList.count;
       checkPositionIndex(index, size);
@@ -570,23 +575,27 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   // Query Operations
 
+  @Pure
   @Override
   public int size() {
     return size;
   }
 
+  @Pure
   @Override
   public boolean isEmpty() {
     return head == null;
   }
 
+  @Pure
   @Override
-  public boolean containsKey(@Nullable Object key) {
+  public boolean containsKey(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return keyToKeyList.containsKey(key);
   }
 
+  @Pure
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  public boolean containsValue(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object value) {
     return values().contains(value);
   }
 
@@ -600,7 +609,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * @return {@code true} always
    */
   @Override
-  public boolean put(@Nullable K key, @Nullable V value) {
+  public boolean put(/*@Nullable*/ K key, /*@Nullable*/ V value) {
     addNode(key, value, null);
     return true;
   }
@@ -618,7 +627,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * {@link java.util.RandomAccess}.
    */
   @Override
-  public List<V> replaceValues(@Nullable K key, Iterable<? extends V> values) {
+  public List<V> replaceValues(/*@Nullable*/ K key, Iterable<? extends V> values) {
     List<V> oldValues = getCopy(key);
     ListIterator<V> keyValues = new ValueForKeyIterator(key);
     Iterator<? extends V> newValues = values.iterator();
@@ -643,7 +652,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
     return oldValues;
   }
 
-  private List<V> getCopy(@Nullable Object key) {
+  private List<V> getCopy(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return unmodifiableList(Lists.newArrayList(new ValueForKeyIterator(key)));
   }
 
@@ -654,7 +663,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * {@link java.util.RandomAccess}.
    */
   @Override
-  public List<V> removeAll(@Nullable Object key) {
+  public List<V> removeAll(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     List<V> oldValues = getCopy(key);
     removeAllNodes(key);
     return oldValues;
@@ -681,8 +690,9 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * <p>The returned list is not serializable and does not have random access.
    */
   @Override
-  public List<V> get(final @Nullable K key) {
+  public List<V> get(final /*@Nullable*/ K key) {
     return new AbstractSequentialList<V>() {
+      @Pure
       @Override
       public int size() {
         KeyList<K, V> keyList = keyToKeyList.get(key);
@@ -710,8 +720,9 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
         return new DistinctKeyIterator();
       }
 
+      @Pure
       @Override
-      public boolean contains(Object key) { // for performance
+      public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) { // for performance
         return containsKey(key);
       }
 
@@ -732,6 +743,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * List}, instead of the {@link Collection} specified in the {@link
    * ListMultimap} interface.
    */
+  @SideEffectFree
   @Override
   public List<V> values() {
     return (List<V>) super.values();
@@ -783,6 +795,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * subsequent {@code setValue()} call won't update the multimap but will lead
    * to a revised value being returned by {@code getValue()}.
    */
+  @SideEffectFree
   @Override
   public List<Entry<K, V>> entries() {
     return (List<Entry<K, V>>) super.entries();
@@ -846,4 +859,18 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   @GwtIncompatible("java serialization not supported")
   private static final long serialVersionUID = 0;
+
+@Pure
+@Override
+public boolean containsEntry(/*@Nullable*/ Object arg0, /*@Nullable*/ Object arg1) { return super.containsEntry(arg0, arg1); }
+
+@Pure
+@Override
+public boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
+
+@Override
+public boolean remove(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0, /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg1) { return super.remove(arg0, arg1); }
+
+@Override
+public Map<K, Collection<V>> asMap() { return super.asMap(); }
 }

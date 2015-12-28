@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 /**
@@ -23,6 +25,7 @@ import com.google.common.annotations.GwtCompatible;
  *
  * @author Jared Levy
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
 class EmptyImmutableListMultimap extends ImmutableListMultimap<Object, Object> {
   static final EmptyImmutableListMultimap INSTANCE = new EmptyImmutableListMultimap();

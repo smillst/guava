@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
@@ -49,6 +52,7 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableList<E> extends ImmutableCollection<E>
@@ -334,18 +338,20 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
     };
   }
 
+  @Pure
   @Override
-  public int indexOf(@Nullable Object object) {
+  public int indexOf(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     return (object == null) ? -1 : Lists.indexOfImpl(this, object);
   }
 
+  @Pure
   @Override
-  public int lastIndexOf(@Nullable Object object) {
+  public int lastIndexOf(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     return (object == null) ? -1 : Lists.lastIndexOfImpl(this, object);
   }
 
   @Override
-  public boolean contains(@Nullable Object object) {
+  public boolean contains(/*@Nullable*/ Object object) {
     return indexOf(object) >= 0;
   }
 
@@ -516,18 +522,18 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
     }
 
     @Override
-    public boolean contains(@Nullable Object object) {
+    public boolean contains(/*@Nullable*/ Object object) {
       return forwardList.contains(object);
     }
 
     @Override
-    public int indexOf(@Nullable Object object) {
+    public int indexOf(/*@Nullable*/ Object object) {
       int index = forwardList.lastIndexOf(object);
       return (index >= 0) ? reverseIndex(index) : -1;
     }
 
     @Override
-    public int lastIndexOf(@Nullable Object object) {
+    public int lastIndexOf(/*@Nullable*/ Object object) {
       int index = forwardList.indexOf(object);
       return (index >= 0) ? reverseIndex(index) : -1;
     }
@@ -556,7 +562,7 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
   }
 
   @Override
-  public boolean equals(@Nullable Object obj) {
+  public boolean equals(/*@Nullable*/ Object obj) {
     return Lists.equalsImpl(this, obj);
   }
 

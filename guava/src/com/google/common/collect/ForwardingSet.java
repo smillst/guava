@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -45,8 +48,9 @@ import javax.annotation.Nullable;
  * @author Louis Wasserman
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
-public abstract class ForwardingSet<E> extends ForwardingCollection<E> implements Set<E> {
+public abstract class ForwardingSet<E extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends ForwardingCollection<E> implements Set<E> {
   // TODO(lowasser): identify places where thread safety is actually lost
 
   /** Constructor for use by subclasses. */
@@ -55,11 +59,13 @@ public abstract class ForwardingSet<E> extends ForwardingCollection<E> implement
   @Override
   protected abstract Set<E> delegate();
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     return object == this || delegate().equals(object);
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return delegate().hashCode();
@@ -85,7 +91,7 @@ public abstract class ForwardingSet<E> extends ForwardingCollection<E> implement
    *
    * @since 7.0
    */
-  protected boolean standardEquals(@Nullable Object object) {
+  protected boolean standardEquals(/*@Nullable*/ Object object) {
     return Sets.equalsImpl(this, object);
   }
 

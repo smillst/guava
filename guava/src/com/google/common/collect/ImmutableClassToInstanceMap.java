@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.primitives.Primitives;
@@ -32,6 +34,7 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 public final class ImmutableClassToInstanceMap<B> extends ForwardingMap<Class<? extends B>, B>
     implements ClassToInstanceMap<B>, Serializable {
 

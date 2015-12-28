@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkNonnegative;
@@ -55,6 +59,7 @@ import javax.annotation.Nullable;
  * @author mike nonemacher
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> implements Serializable {
 
   /*
@@ -153,7 +158,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
    * @return the nonnegative number of occurrences of the element
    */
   @Override
-  public int count(@Nullable Object element) {
+  public int count(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object element) {
     AtomicInteger existingCounter = Maps.safeGet(countMap, element);
     return (existingCounter == null) ? 0 : existingCounter.get();
   }
@@ -164,6 +169,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
    * <p>If the data in the multiset is modified by any other threads during this method,
    * it is undefined which (if any) of these modifications will be reflected in the result.
    */
+  @Pure
   @Override
   public int size() {
     long sum = 0L;
@@ -184,7 +190,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
   }
 
   @Override
-  public <T> T[] toArray(T[] array) {
+  public <T extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> T[] toArray(T[] array) {
     return snapshot().toArray(array);
   }
 
@@ -281,7 +287,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
    * testRemove_nullAllowed.
    */
   @Override
-  public int remove(@Nullable Object element, int occurrences) {
+  public int remove(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object element, int occurrences) {
     if (occurrences == 0) {
       return count(element);
     }
@@ -321,7 +327,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
    * @return {@code true} if the removal was possible (including if {@code occurrences} is zero)
    * @throws IllegalArgumentException if {@code occurrences} is negative
    */
-  public boolean removeExactly(@Nullable Object element, int occurrences) {
+  public boolean removeExactly(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object element, int occurrences) {
     if (occurrences == 0) {
       return true;
     }
@@ -466,7 +472,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
       }
 
       @Override
-      public boolean contains(@Nullable Object object) {
+      public boolean contains(/*@Nullable*/ Object object) {
         return object != null && Collections2.safeContains(delegate, object);
       }
 
@@ -476,7 +482,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
       }
 
       @Override
-      public boolean remove(Object object) {
+      public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
         return object != null && Collections2.safeRemove(delegate, object);
       }
 
@@ -487,6 +493,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
     };
   }
 
+  @SideEffectFree
   @Override
   public Set<Multiset.Entry<E>> createEntrySet() {
     return new EntrySet();
@@ -497,6 +504,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
     return countMap.size();
   }
 
+  @Pure
   @Override
   public boolean isEmpty() {
     return countMap.isEmpty();
@@ -571,7 +579,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
     }
 
     @Override
-    public <T> T[] toArray(T[] array) {
+    public <T extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> T[] toArray(T[] array) {
       return snapshot().toArray(array);
     }
 
@@ -581,6 +589,22 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
       Iterators.addAll(list, iterator());
       return list;
     }
+
+  @Pure
+  @Override
+  public int size() { return super.size(); }
+
+  @Pure
+  @Override
+  public boolean isEmpty() { return super.isEmpty(); }
+
+  @Pure
+  @Override
+  public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
+
+  @Pure
+  @Override
+  public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.remove(arg0); }
   }
 
   /**
@@ -600,4 +624,27 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
   }
 
   private static final long serialVersionUID = 1;
+
+@Pure
+public int hashCode() { return super.hashCode(); }
+
+@Pure
+@Override
+public boolean equals(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
+
+@Override
+public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
+
+@Override
+public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.remove(arg0); }
+
+@Pure
+@Override
+public boolean containsAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> arg0) { return super.containsAll(arg0); }
+
+@Override
+public boolean removeAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> arg0) { return super.removeAll(arg0); }
+
+@Override
+public boolean retainAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> arg0) { return super.retainAll(arg0); }
 }

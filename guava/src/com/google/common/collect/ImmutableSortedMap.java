@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
@@ -23,7 +27,6 @@ import static com.google.common.collect.Maps.keyOrNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Arrays;
@@ -53,6 +56,7 @@ import javax.annotation.Nullable;
  * @author Louis Wasserman
  * @since 2.0 (implements {@code NavigableMap} since 12.0)
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxverideShim<K, V>
     implements NavigableMap<K, V> {
@@ -519,13 +523,14 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
     this.descendingMap = descendingMap;
   }
 
+  @Pure
   @Override
   public int size() {
     return valueList.size();
   }
 
   @Override
-  public V get(@Nullable Object key) {
+  public /*@org.checkerframework.checker.nullness.qual.Nullable*/ V get(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     int index = keySet.indexOf(key);
     return (index == -1) ? null : valueList.get(index);
   }
@@ -539,6 +544,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
    * Returns an immutable set of the mappings in this map, sorted by the key
    * ordering.
    */
+  @SideEffectFree
   @Override
   public ImmutableSet<Entry<K, V>> entrySet() {
     return super.entrySet();
@@ -572,6 +578,10 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
       ImmutableMap<K, V> map() {
         return ImmutableSortedMap.this;
       }
+
+    @Pure
+    @Override
+    public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
     }
     return isEmpty() ? ImmutableSet.<Entry<K, V>>of() : new EntrySet();
   }
@@ -579,6 +589,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   /**
    * Returns an immutable sorted set of the keys in this map.
    */
+  @SideEffectFree
   @Override
   public ImmutableSortedSet<K> keySet() {
     return keySet;
@@ -588,6 +599,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
    * Returns an immutable collection of the values in this map, sorted by the
    * ordering of the corresponding keys.
    */
+  @SideEffectFree
   @Override
   public ImmutableCollection<V> values() {
     return valueList;
@@ -599,6 +611,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
    * Note that its behavior is not consistent with {@link TreeMap#comparator()},
    * which returns {@code null} to indicate natural ordering.
    */
+  @SideEffectFree
   @Override
   public Comparator<? super K> comparator() {
     return keySet().comparator();
@@ -869,4 +882,7 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
   // This class is never actually serialized directly, but we have to make the
   // warning go away (and suppressing would suppress for all nested classes too)
   private static final long serialVersionUID = 0;
+
+@Pure
+public boolean containsValue(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsValue(arg0); }
 }

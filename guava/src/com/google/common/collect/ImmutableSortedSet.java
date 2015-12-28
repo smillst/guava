@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ObjectArrays.checkElementsNotNull;
@@ -54,6 +57,7 @@ import javax.annotation.Nullable;
  * @since 2.0 (implements {@code NavigableSet} since 12.0)
  */
 // TODO(benyu): benchmark and optimize all creation paths, which are a mess now
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxverideShim<E>
@@ -544,6 +548,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
    * {@link SortedSet#comparator()}, which returns {@code null} to indicate
    * natural ordering.
    */
+  @SideEffectFree
   @Override
   public Comparator<? super E> comparator() {
     return comparator;
@@ -563,6 +568,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
    * method doesn't throw an exception in that situation, but instead keeps the
    * original {@code toElement}.
    */
+  @SideEffectFree
   @Override
   public ImmutableSortedSet<E> headSet(E toElement) {
     return headSet(toElement, false);
@@ -590,6 +596,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
    * original {@code toElement}, instead of throwing an exception, if passed a
    * {@code toElement} greater than an earlier {@code toElement}.
    */
+  @SideEffectFree
   @Override
   public ImmutableSortedSet<E> subSet(E fromElement, E toElement) {
     return subSet(fromElement, true, toElement, false);
@@ -619,6 +626,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
    * this method doesn't throw an exception in that situation, but instead keeps
    * the original {@code fromElement}.
    */
+  @SideEffectFree
   @Override
   public ImmutableSortedSet<E> tailSet(E fromElement) {
     return tailSet(fromElement, true);
@@ -751,7 +759,7 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
   /**
    * Returns the position of an element within the set, or -1 if not present.
    */
-  abstract int indexOf(@Nullable Object target);
+  abstract int indexOf(/*@Nullable*/ Object target);
 
   /*
    * This class is used to serialize all ImmutableSortedSet instances,

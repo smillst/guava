@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.io.Serializable;
@@ -23,16 +26,18 @@ import java.io.Serializable;
 import javax.annotation.Nullable;
 
 /** An ordering that treats {@code null} as greater than all other values. */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
-final class NullsLastOrdering<T> extends Ordering<T> implements Serializable {
+final class NullsLastOrdering<T extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends Ordering<T> implements Serializable {
   final Ordering<? super T> ordering;
 
   NullsLastOrdering(Ordering<? super T> ordering) {
     this.ordering = ordering;
   }
 
+  @Pure
   @Override
-  public int compare(@Nullable T left, @Nullable T right) {
+  public int compare(/*@Nullable*/ T left, /*@Nullable*/ T right) {
     if (left == right) {
       return 0;
     }
@@ -62,8 +67,9 @@ final class NullsLastOrdering<T> extends Ordering<T> implements Serializable {
     return (Ordering<S>) this;
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     if (object == this) {
       return true;
     }
@@ -74,11 +80,13 @@ final class NullsLastOrdering<T> extends Ordering<T> implements Serializable {
     return false;
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return ordering.hashCode() ^ -921210296; // meaningless
   }
 
+  @Pure
   @Override
   public String toString() {
     return ordering + ".nullsLast()";

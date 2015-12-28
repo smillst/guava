@@ -84,7 +84,7 @@ final class Absent<T> extends Optional<T> {
   }
 
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     return object == this;
   }
 

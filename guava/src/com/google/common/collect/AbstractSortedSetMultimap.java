@@ -18,6 +18,9 @@ package com.google.common.collect;
 
 import com.google.common.annotations.GwtCompatible;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,8 +37,9 @@ import javax.annotation.Nullable;
  *
  * @author Jared Levy
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
-abstract class AbstractSortedSetMultimap<K, V> extends AbstractSetMultimap<K, V>
+abstract class AbstractSortedSetMultimap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends AbstractSetMultimap<K, V>
     implements SortedSetMultimap<K, V> {
   /**
    * Creates a new multimap that uses the provided map.
@@ -75,7 +79,7 @@ abstract class AbstractSortedSetMultimap<K, V> extends AbstractSetMultimap<K, V>
    * {@link Collection} specified in the {@link Multimap} interface.
    */
   @Override
-  public SortedSet<V> get(@Nullable K key) {
+  public SortedSet<V> get(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ K key) {
     return (SortedSet<V>) super.get(key);
   }
 
@@ -88,7 +92,7 @@ abstract class AbstractSortedSetMultimap<K, V> extends AbstractSetMultimap<K, V>
    * {@link Collection} specified in the {@link Multimap} interface.
    */
   @Override
-  public SortedSet<V> removeAll(@Nullable Object key) {
+  public SortedSet<V> removeAll(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return (SortedSet<V>) super.removeAll(key);
   }
 
@@ -103,7 +107,7 @@ abstract class AbstractSortedSetMultimap<K, V> extends AbstractSetMultimap<K, V>
    * <p>Any duplicates in {@code values} will be stored in the multimap once.
    */
   @Override
-  public SortedSet<V> replaceValues(@Nullable K key, Iterable<? extends V> values) {
+  public SortedSet<V> replaceValues(/*@Nullable*/ K key, Iterable<? extends V> values) {
     return (SortedSet<V>) super.replaceValues(key, values);
   }
 
@@ -132,6 +136,7 @@ abstract class AbstractSortedSetMultimap<K, V> extends AbstractSetMultimap<K, V>
    * Consequently, the values do not follow their natural ordering or the
    * ordering of the value comparator.
    */
+  @SideEffectFree
   @Override
   public Collection<V> values() {
     return super.values();

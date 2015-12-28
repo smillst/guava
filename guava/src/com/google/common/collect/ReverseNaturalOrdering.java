@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -24,11 +27,13 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /** An ordering that uses the reverse of the natural order of the values. */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
 @SuppressWarnings("unchecked") // TODO(kevinb): the right way to explain this??
 final class ReverseNaturalOrdering extends Ordering<Comparable> implements Serializable {
   static final ReverseNaturalOrdering INSTANCE = new ReverseNaturalOrdering();
 
+  @Pure
   @Override
   public int compare(Comparable left, Comparable right) {
     checkNotNull(left); // right null is caught later
@@ -91,6 +96,7 @@ final class ReverseNaturalOrdering extends Ordering<Comparable> implements Seria
     return INSTANCE;
   }
 
+  @Pure
   @Override
   public String toString() {
     return "Ordering.natural().reverse()";

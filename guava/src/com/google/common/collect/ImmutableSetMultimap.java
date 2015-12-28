@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.Beta;
@@ -48,6 +51,7 @@ import javax.annotation.Nullable;
  * @author Mike Ward
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
     implements SetMultimap<K, V> {
@@ -343,7 +347,7 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
   ImmutableSetMultimap(
       ImmutableMap<K, ImmutableSet<V>> map,
       int size,
-      @Nullable Comparator<? super V> valueComparator) {
+      /*@Nullable*/ Comparator<? super V> valueComparator) {
     super(map, size);
     this.emptySet = emptySet(valueComparator);
   }
@@ -357,9 +361,9 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
    * multimap.
    */
   @Override
-  public ImmutableSet<V> get(@Nullable K key) {
+  public ImmutableSet<V> get(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ K key) {
     // This cast is safe as its type is known in constructor.
-    ImmutableSet<V> set = (ImmutableSet<V>) map.get(key);
+    /*@org.checkerframework.checker.nullness.qual.Nullable*/ ImmutableSet<V> set = (/*@org.checkerframework.checker.nullness.qual.Nullable*/ ImmutableSet<V>) map.get(key);
     return MoreObjects.firstNonNull(set, emptySet);
   }
 
@@ -398,7 +402,7 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
    */
   @Deprecated
   @Override
-  public ImmutableSet<V> removeAll(Object key) {
+  public ImmutableSet<V> removeAll(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     throw new UnsupportedOperationException();
   }
 
@@ -421,6 +425,7 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
    * Its iterator traverses the values for the first key, the values for the
    * second key, and so on.
    */
+  @SideEffectFree
   @Override
   public ImmutableSet<Entry<K, V>> entries() {
     ImmutableSet<Entry<K, V>> result = entries;
@@ -430,14 +435,14 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
   }
 
   private static final class EntrySet<K, V> extends ImmutableSet<Entry<K, V>> {
-    @Weak private final transient ImmutableSetMultimap<K, V> multimap;
+    /*@Weak*/ private final transient ImmutableSetMultimap<K, V> multimap;
 
     EntrySet(ImmutableSetMultimap<K, V> multimap) {
       this.multimap = multimap;
     }
 
     @Override
-    public boolean contains(@Nullable Object object) {
+    public boolean contains(/*@Nullable*/ Object object) {
       if (object instanceof Entry) {
         Entry<?, ?> entry = (Entry<?, ?>) object;
         return multimap.containsEntry(entry.getKey(), entry.getValue());
@@ -462,20 +467,20 @@ public class ImmutableSetMultimap<K, V> extends ImmutableMultimap<K, V>
   }
 
   private static <V> ImmutableSet<V> valueSet(
-      @Nullable Comparator<? super V> valueComparator, Collection<? extends V> values) {
+      /*@Nullable*/ Comparator<? super V> valueComparator, Collection<? extends V> values) {
     return (valueComparator == null)
         ? ImmutableSet.copyOf(values)
         : ImmutableSortedSet.copyOf(valueComparator, values);
   }
 
-  private static <V> ImmutableSet<V> emptySet(@Nullable Comparator<? super V> valueComparator) {
+  private static <V> ImmutableSet<V> emptySet(/*@Nullable*/ Comparator<? super V> valueComparator) {
     return (valueComparator == null)
         ? ImmutableSet.<V>of()
         : ImmutableSortedSet.<V>emptySet(valueComparator);
   }
 
   private static <V> ImmutableSet.Builder<V> valuesBuilder(
-      @Nullable Comparator<? super V> valueComparator) {
+      /*@Nullable*/ Comparator<? super V> valueComparator) {
     return (valueComparator == null)
         ? new ImmutableSet.Builder<V>()
         : new ImmutableSortedSet.Builder<V>(valueComparator);

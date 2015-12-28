@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.io.Serializable;
@@ -24,6 +27,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 /** An ordering that compares objects according to a given order. */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
 final class ExplicitOrdering<T> extends Ordering<T> implements Serializable {
   final ImmutableMap<T, Integer> rankMap;
@@ -36,6 +40,7 @@ final class ExplicitOrdering<T> extends Ordering<T> implements Serializable {
     this.rankMap = rankMap;
   }
 
+  @Pure
   @Override
   public int compare(T left, T right) {
     return rank(left) - rank(right); // safe because both are nonnegative
@@ -49,8 +54,9 @@ final class ExplicitOrdering<T> extends Ordering<T> implements Serializable {
     return rank;
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     if (object instanceof ExplicitOrdering) {
       ExplicitOrdering<?> that = (ExplicitOrdering<?>) object;
       return this.rankMap.equals(that.rankMap);
@@ -58,11 +64,13 @@ final class ExplicitOrdering<T> extends Ordering<T> implements Serializable {
     return false;
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return rankMap.hashCode();
   }
 
+  @Pure
   @Override
   public String toString() {
     return "Ordering.explicit(" + rankMap.keySet() + ")";

@@ -21,7 +21,6 @@ import com.google.common.collect.ImmutableMap.IteratorBasedImmutableMap;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -110,7 +109,7 @@ final class DenseImmutableTable<R, C, V> extends RegularImmutableTable<R, C, V> 
     }
 
     @Override
-    public V get(@Nullable Object key) {
+    public V get(/*@Nullable*/ Object key) {
       Integer keyIndex = keyToIndex().get(key);
       return (keyIndex == null) ? null : getValue(keyIndex);
     }
@@ -238,7 +237,7 @@ final class DenseImmutableTable<R, C, V> extends RegularImmutableTable<R, C, V> 
   }
 
   @Override
-  public V get(@Nullable Object rowKey, @Nullable Object columnKey) {
+  public V get(/*@Nullable*/ Object rowKey, /*@Nullable*/ Object columnKey) {
     Integer rowIndex = rowKeyToIndex.get(rowKey);
     Integer columnIndex = columnKeyToIndex.get(columnKey);
     return ((rowIndex == null) || (columnIndex == null)) ? null : values[rowIndex][columnIndex];

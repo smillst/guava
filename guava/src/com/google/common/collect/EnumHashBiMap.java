@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -43,8 +46,9 @@ import javax.annotation.Nullable;
  * @author Mike Bostock
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
-public final class EnumHashBiMap<K extends Enum<K>, V> extends AbstractBiMap<K, V> {
+public final class EnumHashBiMap<K extends Enum<K>, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends AbstractBiMap<K, V> {
   private transient Class<K> keyType;
 
   /**
@@ -87,12 +91,12 @@ public final class EnumHashBiMap<K extends Enum<K>, V> extends AbstractBiMap<K, 
   }
 
   @Override
-  public V put(K key, @Nullable V value) {
+  public V put(K key, /*@Nullable*/ V value) {
     return super.put(key, value);
   }
 
   @Override
-  public V forcePut(K key, @Nullable V value) {
+  public V forcePut(K key, /*@Nullable*/ V value) {
     return super.forcePut(key, value);
   }
 
@@ -125,4 +129,8 @@ public final class EnumHashBiMap<K extends Enum<K>, V> extends AbstractBiMap<K, 
 
   @GwtIncompatible("only needed in emulated source.")
   private static final long serialVersionUID = 0;
+
+@Pure
+@Override
+public boolean containsValue(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsValue(arg0); }
 }

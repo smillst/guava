@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -40,6 +43,7 @@ import java.util.Map;
  * @author Mike Bostock
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
 public final class EnumBiMap<K extends Enum<K>, V extends Enum<V>> extends AbstractBiMap<K, V> {
   private transient Class<K> keyType;
@@ -154,4 +158,11 @@ public final class EnumBiMap<K extends Enum<K>, V extends Enum<V>> extends Abstr
 
   @GwtIncompatible("not needed in emulated source.")
   private static final long serialVersionUID = 0;
+
+@Pure
+@Override
+public boolean containsValue(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsValue(arg0); }
+
+@Override
+public /*@org.checkerframework.checker.nullness.qual.Nullable*/ V remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.remove(arg0); }
 }

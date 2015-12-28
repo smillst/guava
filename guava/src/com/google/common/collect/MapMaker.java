@@ -14,6 +14,8 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -101,6 +103,7 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
 public final class MapMaker extends GenericMapMaker<Object, Object> {
   private static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -238,6 +241,7 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    * @throws IllegalArgumentException if {@code concurrencyLevel} is nonpositive
    * @throws IllegalStateException if a concurrency level was already set
    */
+  @GwtIncompatible("java.util.concurrent.ConcurrentHashMap concurrencyLevel")
   @Override
   public MapMaker concurrencyLevel(int concurrencyLevel) {
     checkState(
@@ -665,7 +669,7 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
 
     private final RemovalCause cause;
 
-    RemovalNotification(@Nullable K key, @Nullable V value, RemovalCause cause) {
+    RemovalNotification(/*@Nullable*/ K key, /*@Nullable*/ V value, RemovalCause cause) {
       super(key, value);
       this.cause = cause;
     }
@@ -770,17 +774,17 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
     // implements ConcurrentMap
 
     @Override
-    public boolean containsKey(@Nullable Object key) {
+    public boolean containsKey(/*@Nullable*/ Object key) {
       return false;
     }
 
     @Override
-    public boolean containsValue(@Nullable Object value) {
+    public boolean containsValue(/*@Nullable*/ Object value) {
       return false;
     }
 
     @Override
-    public V get(@Nullable Object key) {
+    public V get(/*@Nullable*/ Object key) {
       return null;
     }
 
@@ -804,12 +808,12 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
     }
 
     @Override
-    public V remove(@Nullable Object key) {
+    public V remove(/*@Nullable*/ Object key) {
       return null;
     }
 
     @Override
-    public boolean remove(@Nullable Object key, @Nullable Object value) {
+    public boolean remove(/*@Nullable*/ Object key, /*@Nullable*/ Object value) {
       return false;
     }
 
@@ -821,7 +825,7 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
     }
 
     @Override
-    public boolean replace(K key, @Nullable V oldValue, V newValue) {
+    public boolean replace(K key, /*@Nullable*/ V oldValue, V newValue) {
       checkNotNull(key);
       checkNotNull(newValue);
       return false;

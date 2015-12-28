@@ -80,7 +80,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     }
 
     @Override
-    public boolean apply(@Nullable V value) {
+    public boolean apply(/*@Nullable*/ V value) {
       return satisfies(key, value);
     }
   }
@@ -95,12 +95,12 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
   }
 
   @Override
-  public boolean containsKey(@Nullable Object key) {
+  public boolean containsKey(/*@Nullable*/ Object key) {
     return asMap().get(key) != null;
   }
 
   @Override
-  public Collection<V> removeAll(@Nullable Object key) {
+  public Collection<V> removeAll(/*@Nullable*/ Object key) {
     return MoreObjects.firstNonNull(asMap().remove(key), unmodifiableEmptyCollection());
   }
 
@@ -168,7 +168,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
   @WeakOuter
   class AsMap extends ViewCachingAbstractMap<K, Collection<V>> {
     @Override
-    public boolean containsKey(@Nullable Object key) {
+    public boolean containsKey(/*@Nullable*/ Object key) {
       return get(key) != null;
     }
 
@@ -178,7 +178,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     }
 
     @Override
-    public Collection<V> get(@Nullable Object key) {
+    public Collection<V> get(/*@Nullable*/ Object key) {
       Collection<V> result = unfiltered.asMap().get(key);
       if (result == null) {
         return null;
@@ -190,7 +190,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     }
 
     @Override
-    public Collection<V> remove(@Nullable Object key) {
+    public Collection<V> remove(/*@Nullable*/ Object key) {
       Collection<V> collection = unfiltered.asMap().get(key);
       if (collection == null) {
         return null;
@@ -234,7 +234,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         }
 
         @Override
-        public boolean remove(@Nullable Object o) {
+        public boolean remove(/*@Nullable*/ Object o) {
           return AsMap.this.remove(o) != null;
         }
       }
@@ -299,7 +299,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         }
 
         @Override
-        public boolean remove(@Nullable Object o) {
+        public boolean remove(/*@Nullable*/ Object o) {
           if (o instanceof Collection) {
             Collection<?> c = (Collection<?>) o;
             Iterator<Entry<K, Collection<V>>> entryIterator =
@@ -348,7 +348,7 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     }
 
     @Override
-    public int remove(@Nullable Object key, int occurrences) {
+    public int remove(/*@Nullable*/ Object key, int occurrences) {
       checkNonnegative(occurrences, "occurrences");
       if (occurrences == 0) {
         return count(key);

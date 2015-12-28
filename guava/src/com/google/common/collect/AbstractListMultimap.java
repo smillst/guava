@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Collection;
@@ -33,6 +36,7 @@ import javax.annotation.Nullable;
  * @author Jared Levy
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
 abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
     implements ListMultimap<K, V> {
@@ -64,7 +68,7 @@ abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
    * {@link Collection} specified in the {@link Multimap} interface.
    */
   @Override
-  public List<V> get(@Nullable K key) {
+  public List<V> get(/*@Nullable*/ K key) {
     return (List<V>) super.get(key);
   }
 
@@ -76,7 +80,7 @@ abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
    * {@link Collection} specified in the {@link Multimap} interface.
    */
   @Override
-  public List<V> removeAll(@Nullable Object key) {
+  public List<V> removeAll(/*@Nullable*/ Object key) {
     return (List<V>) super.removeAll(key);
   }
 
@@ -88,7 +92,7 @@ abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
    * {@link Collection} specified in the {@link Multimap} interface.
    */
   @Override
-  public List<V> replaceValues(@Nullable K key, Iterable<? extends V> values) {
+  public List<V> replaceValues(/*@Nullable*/ K key, Iterable<? extends V> values) {
     return (List<V>) super.replaceValues(key, values);
   }
 
@@ -100,7 +104,7 @@ abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
    * @return {@code true} always
    */
   @Override
-  public boolean put(@Nullable K key, @Nullable V value) {
+  public boolean put(/*@Nullable*/ K key, /*@Nullable*/ V value) {
     return super.put(key, value);
   }
 
@@ -122,8 +126,9 @@ abstract class AbstractListMultimap<K, V> extends AbstractMapBasedMultimap<K, V>
    * contain the same values in the same order. If the value orderings disagree,
    * the multimaps will not be considered equal.
    */
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     return super.equals(object);
   }
 

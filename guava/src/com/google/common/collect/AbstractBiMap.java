@@ -25,6 +25,10 @@ import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.Objects;
 import com.google.j2objc.annotations.WeakOuter;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -46,8 +50,9 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @author Mike Bostock
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
-abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
+abstract class AbstractBiMap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends ForwardingMap<K, V>
     implements BiMap<K, V>, Serializable {
 
   private transient Map<K, V> delegate;
@@ -72,14 +77,14 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
   /**
    * Returns its input, or throws an exception if this is not a valid key.
    */
-  K checkKey(@Nullable K key) {
+  K checkKey(/*@Nullable*/ K key) {
     return key;
   }
 
   /**
    * Returns its input, or throws an exception if this is not a valid value.
    */
-  V checkValue(@Nullable V value) {
+  V checkValue(/*@Nullable*/ V value) {
     return value;
   }
 
@@ -103,24 +108,25 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
 
   // Query Operations (optimizations)
 
+  @Pure
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  public boolean containsValue(/*@org.checkerframework.checker.nullness.qual.Nullable*/ /*@Nullable*/ Object value) {
     return inverse.containsKey(value);
   }
 
   // Modification Operations
 
   @Override
-  public V put(@Nullable K key, @Nullable V value) {
+  public V put(/*@Nullable*/ K key, /*@Nullable*/ V value) {
     return putInBothMaps(key, value, false);
   }
 
   @Override
-  public V forcePut(@Nullable K key, @Nullable V value) {
+  public V forcePut(/*@Nullable*/ K key, /*@Nullable*/ V value) {
     return putInBothMaps(key, value, true);
   }
 
-  private V putInBothMaps(@Nullable K key, @Nullable V value, boolean force) {
+  private V putInBothMaps(/*@Nullable*/ K key, /*@Nullable*/ V value, boolean force) {
     checkKey(key);
     checkValue(value);
     boolean containedKey = containsKey(key);
@@ -145,17 +151,17 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
   }
 
   @Override
-  public V remove(@Nullable Object key) {
+  public /*@org.checkerframework.checker.nullness.qual.Nullable*/ V remove(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return containsKey(key) ? removeFromBothMaps(key) : null;
   }
 
-  private V removeFromBothMaps(Object key) {
+  private V removeFromBothMaps(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     V oldValue = delegate.remove(key);
     removeFromInverseMap(oldValue);
     return oldValue;
   }
 
-  private void removeFromInverseMap(V oldValue) {
+  private void removeFromInverseMap(/*@org.checkerframework.checker.nullness.qual.Nullable*/ V oldValue) {
     inverse.delegate.remove(oldValue);
   }
 
@@ -183,6 +189,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
 
   private transient Set<K> keySet;
 
+  @SideEffectFree
   @Override
   public Set<K> keySet() {
     Set<K> result = keySet;
@@ -202,7 +209,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
     }
 
     @Override
-    public boolean remove(Object key) {
+    public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
       if (!contains(key)) {
         return false;
       }
@@ -211,12 +218,12 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
     }
 
     @Override
-    public boolean removeAll(Collection<?> keysToRemove) {
+    public boolean removeAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> keysToRemove) {
       return standardRemoveAll(keysToRemove);
     }
 
     @Override
-    public boolean retainAll(Collection<?> keysToRetain) {
+    public boolean retainAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> keysToRetain) {
       return standardRetainAll(keysToRetain);
     }
 
@@ -228,6 +235,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
 
   private transient Set<V> valueSet;
 
+  @SideEffectFree
   @Override
   public Set<V> values() {
     /*
@@ -262,6 +270,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
       return standardToArray(array);
     }
 
+    @Pure
     @Override
     public String toString() {
       return standardToString();
@@ -270,6 +279,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
 
   private transient Set<Entry<K, V>> entrySet;
 
+  @SideEffectFree
   @Override
   public Set<Entry<K, V>> entrySet() {
     Set<Entry<K, V>> result = entrySet;
@@ -291,7 +301,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
     }
 
     @Override
-    public boolean remove(Object object) {
+    public boolean remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
       if (!esDelegate.contains(object)) {
         return false;
       }
@@ -369,23 +379,25 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
       return standardToArray(array);
     }
 
+    @Pure
     @Override
-    public boolean contains(Object o) {
+    public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object o) {
       return Maps.containsEntryImpl(delegate(), o);
     }
 
+    @Pure
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public boolean containsAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> c) {
       return standardContainsAll(c);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public boolean removeAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> c) {
       return standardRemoveAll(c);
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public boolean retainAll(Collection<? extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> c) {
       return standardRetainAll(c);
     }
   }

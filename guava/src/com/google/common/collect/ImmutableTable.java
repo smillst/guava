@@ -318,12 +318,12 @@ public abstract class ImmutableTable<R, C, V> extends AbstractTable<R, C, V> {
   public abstract ImmutableMap<R, Map<C, V>> rowMap();
 
   @Override
-  public boolean contains(@Nullable Object rowKey, @Nullable Object columnKey) {
+  public boolean contains(/*@Nullable*/ Object rowKey, /*@Nullable*/ Object columnKey) {
     return get(rowKey, columnKey) != null;
   }
 
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  public boolean containsValue(/*@Nullable*/ Object value) {
     return values().contains(value);
   }
 

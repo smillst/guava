@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkNonnegative;
 
@@ -128,8 +131,9 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
-public abstract class Ordering<T> implements Comparator<T> {
+public abstract class Ordering<T extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> implements Comparator<T> {
   // Natural order
 
   /**
@@ -489,7 +493,7 @@ public abstract class Ordering<T> implements Comparator<T> {
 
   // Override to add @Nullable
   @Override
-  public abstract int compare(@Nullable T left, @Nullable T right);
+  public abstract int compare(/*@Nullable*/ T left, /*@Nullable*/ T right);
 
   /**
    * Returns the least of the specified values according to this ordering. If
@@ -541,7 +545,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * @throws ClassCastException if the parameters are not <i>mutually
    *     comparable</i> under this ordering.
    */
-  public <E extends T> E min(@Nullable E a, @Nullable E b) {
+  public <E extends T> E min(/*@Nullable*/ E a, /*@Nullable*/ E b) {
     return (compare(a, b) <= 0) ? a : b;
   }
 
@@ -556,7 +560,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * @throws ClassCastException if the parameters are not <i>mutually
    *     comparable</i> under this ordering.
    */
-  public <E extends T> E min(@Nullable E a, @Nullable E b, @Nullable E c, E... rest) {
+  public <E extends T> E min(/*@Nullable*/ E a, /*@Nullable*/ E b, /*@Nullable*/ E c, E... rest) {
     E minSoFar = min(min(a, b), c);
 
     for (E r : rest) {
@@ -616,7 +620,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * @throws ClassCastException if the parameters are not <i>mutually
    *     comparable</i> under this ordering.
    */
-  public <E extends T> E max(@Nullable E a, @Nullable E b) {
+  public <E extends T> E max(/*@Nullable*/ E a, /*@Nullable*/ E b) {
     return (compare(a, b) >= 0) ? a : b;
   }
 
@@ -631,7 +635,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * @throws ClassCastException if the parameters are not <i>mutually
    *     comparable</i> under this ordering.
    */
-  public <E extends T> E max(@Nullable E a, @Nullable E b, @Nullable E c, E... rest) {
+  public <E extends T> E max(/*@Nullable*/ E a, /*@Nullable*/ E b, /*@Nullable*/ E c, E... rest) {
     E maxSoFar = max(max(a, b), c);
 
     for (E r : rest) {
@@ -895,6 +899,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * ordering. Note that this is always true when the iterable has fewer than
    * two elements.
    */
+  @Pure
   public boolean isOrdered(Iterable<? extends T> iterable) {
     Iterator<? extends T> it = iterable.iterator();
     if (it.hasNext()) {
@@ -916,6 +921,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * this ordering. Note that this is always true when the iterable has fewer
    * than two elements.
    */
+  @Pure
   public boolean isStrictlyOrdered(Iterable<? extends T> iterable) {
     Iterator<? extends T> it = iterable.iterator();
     if (it.hasNext()) {
@@ -939,7 +945,7 @@ public abstract class Ordering<T> implements Comparator<T> {
    * @param sortedList the list to be searched
    * @param key the key to be searched for
    */
-  public int binarySearch(List<? extends T> sortedList, @Nullable T key) {
+  public int binarySearch(List<? extends T> sortedList, /*@Nullable*/ T key) {
     return Collections.binarySearch(sortedList, key, this);
   }
 

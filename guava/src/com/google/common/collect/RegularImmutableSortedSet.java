@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.SortedLists.KeyAbsentBehavior.INVERTED_INSERTION_INDEX;
 import static com.google.common.collect.SortedLists.KeyAbsentBehavior.NEXT_HIGHER;
@@ -42,6 +46,7 @@ import javax.annotation.Nullable;
  * @author Jared Levy
  * @author Louis Wasserman
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial")
 final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
@@ -64,13 +69,15 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     return elements.reverse().iterator();
   }
 
+  @Pure
   @Override
   public int size() {
     return elements.size();
   }
 
+  @Pure
   @Override
-  public boolean contains(@Nullable Object o) {
+  public boolean contains(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object o) {
     try {
       return o != null && unsafeBinarySearch(o) >= 0;
     } catch (ClassCastException e) {
@@ -78,6 +85,7 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     }
   }
 
+  @Pure
   @Override
   public boolean containsAll(Collection<?> targets) {
     // TODO(jlevy): For optimal performance, use a binary search when
@@ -143,8 +151,9 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     return elements.copyIntoArray(dst, offset);
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     if (object == this) {
       return true;
     }
@@ -180,6 +189,7 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     return this.containsAll(that);
   }
 
+  @SideEffectFree
   @Override
   public E first() {
     if (isEmpty()) {
@@ -188,6 +198,7 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     return elements.get(0);
   }
 
+  @SideEffectFree
   @Override
   public E last() {
     if (isEmpty()) {
@@ -274,7 +285,7 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
   }
 
   @Override
-  int indexOf(@Nullable Object target) {
+  int indexOf(/*@Nullable*/ Object target) {
     if (target == null) {
       return -1;
     }

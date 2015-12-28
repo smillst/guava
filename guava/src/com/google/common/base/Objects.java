@@ -16,6 +16,9 @@
 
 package com.google.common.base;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -35,6 +38,7 @@ import javax.annotation.Nullable;
  * @author Laurence Gonsalves
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
 public final class Objects {
   private Objects() {}
@@ -56,7 +60,7 @@ public final class Objects {
    * deprecated; use {@link java.util.Objects#equals} instead.
    */
   @CheckReturnValue
-  public static boolean equal(@Nullable Object a, @Nullable Object b) {
+  public static boolean equal(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object a, /*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object b) {
     return a == b || (a != null && a.equals(b));
   }
 
@@ -80,8 +84,9 @@ public final class Objects {
    * <p><b>Note for Java 7 and later:</b> This method should be treated as
    * deprecated; use {@link java.util.Objects#hash} instead.
    */
+  @Pure
   @CheckReturnValue
-  public static int hashCode(@Nullable Object... objects) {
+  public static int hashCode(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object... objects) {
     return Arrays.hashCode(objects);
   }
 
@@ -187,7 +192,7 @@ public final class Objects {
    */
   @CheckReturnValue
   @Deprecated
-  public static <T> T firstNonNull(@Nullable T first, @Nullable T second) {
+  public static <T> T firstNonNull(/*@Nullable*/ T first, /*@Nullable*/ T second) {
     return MoreObjects.firstNonNull(first, second);
   }
 
@@ -231,7 +236,7 @@ public final class Objects {
      * is used, unless {@link #omitNullValues()} is called, in which case this
      * name/value pair will not be added.
      */
-    public ToStringHelper add(String name, @Nullable Object value) {
+    public ToStringHelper add(String name, /*@Nullable*/ Object value) {
       return addHolder(name, value);
     }
 
@@ -301,7 +306,7 @@ public final class Objects {
      * <p>It is strongly encouraged to use {@link #add(String, Object)} instead
      * and give value a readable name.
      */
-    public ToStringHelper addValue(@Nullable Object value) {
+    public ToStringHelper addValue(/*@Nullable*/ Object value) {
       return addHolder(value);
     }
 
@@ -415,13 +420,13 @@ public final class Objects {
       return valueHolder;
     }
 
-    private ToStringHelper addHolder(@Nullable Object value) {
+    private ToStringHelper addHolder(/*@Nullable*/ Object value) {
       ValueHolder valueHolder = addHolder();
       valueHolder.value = value;
       return this;
     }
 
-    private ToStringHelper addHolder(String name, @Nullable Object value) {
+    private ToStringHelper addHolder(String name, /*@Nullable*/ Object value) {
       ValueHolder valueHolder = addHolder();
       valueHolder.value = value;
       valueHolder.name = checkNotNull(name);

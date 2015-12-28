@@ -16,6 +16,8 @@
 
 package com.google.common.base;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.lang.ref.WeakReference;
@@ -25,6 +27,7 @@ import java.lang.ref.WeakReference;
  *
  * @author Jesse Wilson
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(emulated = true)
 final class Platform {
   private Platform() {}

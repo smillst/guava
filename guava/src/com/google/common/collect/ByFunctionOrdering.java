@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -30,6 +33,7 @@ import javax.annotation.Nullable;
  * An ordering that orders elements by applying an order to the result of a
  * function on those elements.
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
 final class ByFunctionOrdering<F, T> extends Ordering<F> implements Serializable {
   final Function<F, ? extends T> function;
@@ -40,13 +44,15 @@ final class ByFunctionOrdering<F, T> extends Ordering<F> implements Serializable
     this.ordering = checkNotNull(ordering);
   }
 
+  @Pure
   @Override
   public int compare(F left, F right) {
     return ordering.compare(function.apply(left), function.apply(right));
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     if (object == this) {
       return true;
     }
@@ -57,11 +63,13 @@ final class ByFunctionOrdering<F, T> extends Ordering<F> implements Serializable
     return false;
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return Objects.hashCode(function, ordering);
   }
 
+  @Pure
   @Override
   public String toString() {
     return ordering + ".onResultOf(" + function + ")";

@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import javax.annotation.Nullable;
@@ -26,12 +28,13 @@ import javax.annotation.Nullable;
  * @author Bob Lee
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
 public class ComputationException extends RuntimeException {
   /**
    * Creates a new instance with the given cause.
    */
-  public ComputationException(@Nullable Throwable cause) {
+  public ComputationException(/*@Nullable*/ Throwable cause) {
     super(cause);
   }
 

@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
@@ -24,6 +28,7 @@ import com.google.common.base.Preconditions;
  *
  * @author Kevin Bourrillion
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // uses writeReplace(), not default serialization
 class RegularImmutableList<E> extends ImmutableList<E> {
@@ -44,6 +49,7 @@ class RegularImmutableList<E> extends ImmutableList<E> {
     this(array, 0, array.length);
   }
 
+  @Pure
   @Override
   public int size() {
     return size;
@@ -82,4 +88,29 @@ class RegularImmutableList<E> extends ImmutableList<E> {
   }
 
   // TODO(lowasser): benchmark optimizations for equals() and see if they're worthwhile
+
+@Override
+public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
+
+@Pure
+@Override
+public boolean equals(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
+
+@Override
+public int indexOf(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.indexOf(arg0); }
+
+@Override
+public int lastIndexOf(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.lastIndexOf(arg0); }
+
+@SideEffectFree
+@Override
+public ImmutableList<E> subList(int arg0, int arg1) { return super.subList(arg0, arg1); }
+
+@Pure
+@Override
+public int hashCode() { return super.hashCode(); }
+
+@Pure
+@Override
+public String toString() { return super.toString(); }
 }

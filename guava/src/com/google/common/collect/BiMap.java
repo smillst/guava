@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Map;
@@ -37,7 +38,8 @@ import javax.annotation.Nullable;
  * @since 2.0
  */
 @GwtCompatible
-public interface BiMap<K, V> extends Map<K, V> {
+@AnnotatedFor({"nullness"})
+public interface BiMap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends Map<K, V> {
   // Modification Operations
 
   /**
@@ -49,7 +51,7 @@ public interface BiMap<K, V> extends Map<K, V> {
    */
   @Override
   @Nullable
-  V put(@Nullable K key, @Nullable V value);
+  V put(/*@Nullable*/ K key, /*@Nullable*/ V value);
 
   /**
    * An alternate form of {@code put} that silently removes any existing entry
@@ -69,7 +71,7 @@ public interface BiMap<K, V> extends Map<K, V> {
    *     be {@code null}, or {@code null} if there was no previous entry
    */
   @Nullable
-  V forcePut(@Nullable K key, @Nullable V value);
+  V forcePut(/*@Nullable*/ K key, /*@Nullable*/ V value);
 
   // Bulk Operations
 

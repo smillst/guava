@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Iterator;
@@ -30,8 +32,9 @@ import java.util.Iterator;
  * @author Jared Levy
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
-public abstract class UnmodifiableIterator<E> implements Iterator<E> {
+public abstract class UnmodifiableIterator<E extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> implements Iterator<E> {
   /** Constructor for use by subclasses. */
   protected UnmodifiableIterator() {}
 

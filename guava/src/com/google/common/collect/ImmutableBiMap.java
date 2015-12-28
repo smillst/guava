@@ -16,12 +16,17 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 /**
  * A {@link BiMap} whose contents will never change, with many other important properties detailed
@@ -30,6 +35,7 @@ import java.util.Map;
  * @author Jared Levy
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V> implements BiMap<K, V> {
 
@@ -302,6 +308,7 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V> implements
    * Returns an immutable set of the values in this map. The values are in the
    * same order as the parameters used to build this map.
    */
+  @SideEffectFree
   @Override
   public ImmutableSet<V> values() {
     return inverse().keySet();
@@ -346,4 +353,21 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V> implements
   Object writeReplace() {
     return new SerializedForm(this);
   }
+
+@Override
+public boolean containsKey(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsKey(arg0); }
+
+@Override
+public boolean containsValue(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsValue(arg0); }
+
+@Override
+public boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
+
+@SideEffectFree
+@Override
+public ImmutableSet<Map.Entry<K, V>> entrySet() { return super.entrySet(); }
+
+@SideEffectFree
+@Override
+public ImmutableSet<K> keySet() { return super.keySet(); }
 }

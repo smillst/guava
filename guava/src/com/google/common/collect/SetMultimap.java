@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Collection;
@@ -52,7 +55,8 @@ import javax.annotation.Nullable;
  * @since 2.0
  */
 @GwtCompatible
-public interface SetMultimap<K, V> extends Multimap<K, V> {
+@AnnotatedFor({"nullness"})
+public interface SetMultimap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends Multimap<K, V> {
   /**
    * {@inheritDoc}
    *
@@ -61,7 +65,7 @@ public interface SetMultimap<K, V> extends Multimap<K, V> {
    * specified in the {@link Multimap} interface.
    */
   @Override
-  Set<V> get(@Nullable K key);
+  Set<V> get(/*@Nullable*/ K key);
 
   /**
    * {@inheritDoc}
@@ -71,7 +75,7 @@ public interface SetMultimap<K, V> extends Multimap<K, V> {
    * specified in the {@link Multimap} interface.
    */
   @Override
-  Set<V> removeAll(@Nullable Object key);
+  Set<V> removeAll(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key);
 
   /**
    * {@inheritDoc}
@@ -115,6 +119,7 @@ public interface SetMultimap<K, V> extends Multimap<K, V> {
    * <p>An empty {@code SetMultimap} is equal to any other empty {@code
    * Multimap}, including an empty {@code ListMultimap}.
    */
+  @Pure
   @Override
-  boolean equals(@Nullable Object obj);
+  boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object obj);
 }

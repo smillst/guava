@@ -251,7 +251,7 @@ class ComputingConcurrentHashMap<K, V> extends MapMakerInternalMap<K, V> {
   private static final class ComputedReference<K, V> implements ValueReference<K, V> {
     final V value;
 
-    ComputedReference(@Nullable V value) {
+    ComputedReference(/*@Nullable*/ V value) {
       this.value = value;
     }
 
@@ -288,7 +288,7 @@ class ComputingConcurrentHashMap<K, V> extends MapMakerInternalMap<K, V> {
   private static final class ComputingValueReference<K, V> implements ValueReference<K, V> {
     final Function<? super K, ? extends V> computingFunction;
 
-    @GuardedBy("this") // writes
+    /*@GuardedBy("this")*/ // writes
     volatile ValueReference<K, V> computedReference = unset();
 
     public ComputingValueReference(Function<? super K, ? extends V> computingFunction) {
@@ -309,7 +309,7 @@ class ComputingConcurrentHashMap<K, V> extends MapMakerInternalMap<K, V> {
 
     @Override
     public ValueReference<K, V> copyFor(
-        ReferenceQueue<V> queue, @Nullable V value, ReferenceEntry<K, V> entry) {
+        ReferenceQueue<V> queue, /*@Nullable*/ V value, ReferenceEntry<K, V> entry) {
       return this;
     }
 

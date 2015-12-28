@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * "Overrides" the {@link ImmutableSet} static methods that lack
  * {@link ImmutableSortedSet} equivalents with deprecated, exception-throwing
@@ -32,6 +36,8 @@ package com.google.common.collect;
  *
  * @author Chris Povirk
  */
+@GwtCompatible
+@AnnotatedFor({"nullness"})
 abstract class ImmutableSortedSetFauxverideShim<E> extends ImmutableSet<E> {
   /**
    * Not supported. Use {@link ImmutableSortedSet#naturalOrder}, which offers

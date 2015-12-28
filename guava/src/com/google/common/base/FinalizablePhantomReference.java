@@ -16,6 +16,7 @@
 
 package com.google.common.base;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 
@@ -29,6 +30,7 @@ import java.lang.ref.ReferenceQueue;
  * @author Bob Lee
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 public abstract class FinalizablePhantomReference<T> extends PhantomReference<T>
     implements FinalizableReference {
   /**

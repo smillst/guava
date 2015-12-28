@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.VisibleForTesting;
@@ -46,11 +49,12 @@ import java.util.Set;
  * @author Jared Levy
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
-public final class HashMultimap<K, V> extends AbstractSetMultimap<K, V> {
+public final class HashMultimap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends AbstractSetMultimap<K, V> {
   private static final int DEFAULT_VALUES_PER_KEY = 2;
 
-  @VisibleForTesting transient int expectedValuesPerKey = DEFAULT_VALUES_PER_KEY;
+  /*@VisibleForTesting*/ transient int expectedValuesPerKey = DEFAULT_VALUES_PER_KEY;
 
   /**
    * Creates a new, empty {@code HashMultimap} with the default initial
@@ -134,4 +138,14 @@ public final class HashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
   @GwtIncompatible("Not needed in emulated source")
   private static final long serialVersionUID = 0;
+
+@Pure
+@Override
+public boolean equals(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.equals(arg0); }
+
+@Override
+public Set<V> get(/*@org.checkerframework.checker.nullness.qual.Nullable*/ K arg0) { return super.get(arg0); }
+
+@Override
+public Set<V> removeAll(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.removeAll(arg0); }
 }

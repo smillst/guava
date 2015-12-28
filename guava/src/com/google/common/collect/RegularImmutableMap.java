@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 import static com.google.common.collect.ImmutableMapEntry.createEntryArray;
@@ -23,6 +27,7 @@ import static com.google.common.collect.ImmutableMapEntry.createEntryArray;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.collect.ImmutableMapEntry.NonTerminalImmutableMapEntry;
 
+import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
@@ -32,6 +37,7 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @author Gregory Kick
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true, emulated = true)
 final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
 
@@ -68,7 +74,7 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
       V value = entry.getValue();
       checkEntryNotNull(key, value);
       int tableIndex = Hashing.smear(key.hashCode()) & mask;
-      @Nullable ImmutableMapEntry<K, V> existing = table[tableIndex];
+      /*@Nullable*/ ImmutableMapEntry<K, V> existing = table[tableIndex];
       // prepend, not append, so the entries can be immutable
       ImmutableMapEntry<K, V> newEntry;
       if (existing == null) {
@@ -93,7 +99,7 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
   }
 
   static void checkNoConflictInKeyBucket(
-      Object key, Entry<?, ?> entry, @Nullable ImmutableMapEntry<?, ?> keyBucketHead) {
+      Object key, Entry<?, ?> entry, /*@Nullable*/ ImmutableMapEntry<?, ?> keyBucketHead) {
     for (; keyBucketHead != null; keyBucketHead = keyBucketHead.getNextInKeyBucket()) {
       checkNoConflict(!key.equals(keyBucketHead.getKey()), "key", entry, keyBucketHead);
     }
@@ -107,12 +113,12 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
   private static final double MAX_LOAD_FACTOR = 1.2;
 
   @Override
-  public V get(@Nullable Object key) {
+  public /*@org.checkerframework.checker.nullness.qual.Nullable*/ V get(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return get(key, table, mask);
   }
 
   @Nullable
-  static <V> V get(@Nullable Object key, ImmutableMapEntry<?, V>[] keyTable, int mask) {
+  static <V> V get(/*@Nullable*/ Object key, ImmutableMapEntry<?, V>[] keyTable, int mask) {
     if (key == null) {
       return null;
     }
@@ -135,6 +141,7 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
     return null;
   }
 
+  @Pure
   @Override
   public int size() {
     return entries.length;
@@ -153,4 +160,20 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
   // This class is never actually serialized directly, but we have to make the
   // warning go away (and suppressing would suppress for all nested classes too)
   private static final long serialVersionUID = 0;
+
+@Pure
+@Override
+public boolean containsValue(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.containsValue(arg0); }
+
+@SideEffectFree
+@Override
+public ImmutableSet<Map.Entry<K, V>> entrySet() { return super.entrySet(); }
+
+@SideEffectFree
+@Override
+public ImmutableSet<K> keySet() { return super.keySet(); }
+
+@SideEffectFree
+@Override
+public ImmutableCollection<V> values() { return super.values(); }
 }

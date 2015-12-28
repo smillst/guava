@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Objects;
@@ -55,8 +59,10 @@ import javax.annotation.Nullable;
  * @author Louis Wasserman
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
-public abstract class ForwardingMap<K, V> extends ForwardingObject implements Map<K, V> {
+@SuppressWarnings("nullness:generic.argument")
+public abstract class ForwardingMap<K extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object, V extends /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object> extends ForwardingObject implements Map<K, V> {
   // TODO(lowasser): identify places where thread safety is actually lost
 
   /** Constructor for use by subclasses. */
@@ -65,18 +71,22 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
   @Override
   protected abstract Map<K, V> delegate();
 
+  @Pure
   @Override
   public int size() {
     return delegate().size();
   }
 
+  @Pure
   @Override
   public boolean isEmpty() {
     return delegate().isEmpty();
   }
 
   @Override
-  public V remove(Object object) {
+  @SuppressWarnings("nullness")
+  // Suppressed due to annotations on remove in Java.Map
+  public /*@org.checkerframework.checker.nullness.qual.Nullable*/ V remove(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     return delegate().remove(object);
   }
 
@@ -85,18 +95,26 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
     delegate().clear();
   }
 
+  @Pure
   @Override
-  public boolean containsKey(@Nullable Object key) {
+  @SuppressWarnings("nullness")
+  // Suppressed due to annotations on containsKey in Java.Map
+  public boolean containsKey(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return delegate().containsKey(key);
   }
 
+  @Pure
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  @SuppressWarnings("nullness")
+  // Suppressed due to annotations on containsValue in Java.Map
+  public boolean containsValue(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object value) {
     return delegate().containsValue(value);
   }
 
   @Override
-  public V get(@Nullable Object key) {
+  @SuppressWarnings("nullness")
+  // Suppressed due to annotations on get in Java.Map
+  public V get(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object key) {
     return delegate().get(key);
   }
 
@@ -110,26 +128,31 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
     delegate().putAll(map);
   }
 
+  @SideEffectFree
   @Override
   public Set<K> keySet() {
     return delegate().keySet();
   }
 
+  @SideEffectFree
   @Override
   public Collection<V> values() {
     return delegate().values();
   }
 
+  @SideEffectFree
   @Override
   public Set<Entry<K, V>> entrySet() {
     return delegate().entrySet();
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object object) {
     return object == this || delegate().equals(object);
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return delegate().hashCode();
@@ -160,7 +183,7 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
    * @since 7.0
    */
   @Beta
-  protected V standardRemove(@Nullable Object key) {
+  protected V standardRemove(/*@Nullable*/ Object key) {
     Iterator<Entry<K, V>> entryIterator = entrySet().iterator();
     while (entryIterator.hasNext()) {
       Entry<K, V> entry = entryIterator.next();
@@ -212,7 +235,7 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
    * @since 7.0
    */
   @Beta
-  protected boolean standardContainsKey(@Nullable Object key) {
+  protected boolean standardContainsKey(/*@Nullable*/ Object key) {
     return Maps.containsKeyImpl(this, key);
   }
 
@@ -242,7 +265,7 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
    *
    * @since 7.0
    */
-  protected boolean standardContainsValue(@Nullable Object value) {
+  protected boolean standardContainsValue(/*@Nullable*/ Object value) {
     return Maps.containsValueImpl(this, value);
   }
 
@@ -285,7 +308,7 @@ public abstract class ForwardingMap<K, V> extends ForwardingObject implements Ma
    *
    * @since 7.0
    */
-  protected boolean standardEquals(@Nullable Object object) {
+  protected boolean standardEquals(/*@Nullable*/ Object object) {
     return Maps.equalsImpl(this, object);
   }
 

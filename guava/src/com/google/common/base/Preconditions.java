@@ -14,7 +14,10 @@
 
 package com.google.common.base;
 
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import com.google.common.annotations.GwtCompatible;
+import com.google.common.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;
 
@@ -93,6 +96,7 @@ import javax.annotation.Nullable;
  * @author Kevin Bourrillion
  * @since 2.0
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
 public final class Preconditions {
   private Preconditions() {}
@@ -117,7 +121,7 @@ public final class Preconditions {
    *     string using {@link String#valueOf(Object)}
    * @throws IllegalArgumentException if {@code expression} is false
    */
-  public static void checkArgument(boolean expression, @Nullable Object errorMessage) {
+  public static void checkArgument(boolean expression, /*@Nullable*/ Object errorMessage) {
     if (!expression) {
       throw new IllegalArgumentException(String.valueOf(errorMessage));
     }
@@ -140,8 +144,8 @@ public final class Preconditions {
    */
   public static void checkArgument(
       boolean expression,
-      @Nullable String errorMessageTemplate,
-      @Nullable Object... errorMessageArgs) {
+      /*@Nullable*/ String errorMessageTemplate,
+      /*@Nullable*/ Object... errorMessageArgs) {
     if (!expression) {
       throw new IllegalArgumentException(format(errorMessageTemplate, errorMessageArgs));
     }
@@ -169,7 +173,7 @@ public final class Preconditions {
    *     string using {@link String#valueOf(Object)}
    * @throws IllegalStateException if {@code expression} is false
    */
-  public static void checkState(boolean expression, @Nullable Object errorMessage) {
+  public static void checkState(boolean expression, /*@Nullable*/ Object errorMessage) {
     if (!expression) {
       throw new IllegalStateException(String.valueOf(errorMessage));
     }
@@ -193,8 +197,8 @@ public final class Preconditions {
    */
   public static void checkState(
       boolean expression,
-      @Nullable String errorMessageTemplate,
-      @Nullable Object... errorMessageArgs) {
+      /*@Nullable*/ String errorMessageTemplate,
+      /*@Nullable*/ Object... errorMessageArgs) {
     if (!expression) {
       throw new IllegalStateException(format(errorMessageTemplate, errorMessageArgs));
     }
@@ -223,7 +227,7 @@ public final class Preconditions {
    * @return the non-null reference that was validated
    * @throws NullPointerException if {@code reference} is null
    */
-  public static <T> T checkNotNull(T reference, @Nullable Object errorMessage) {
+  public static <T> T checkNotNull(T reference, /*@Nullable*/ Object errorMessage) {
     if (reference == null) {
       throw new NullPointerException(String.valueOf(errorMessage));
     }
@@ -245,7 +249,7 @@ public final class Preconditions {
    * @throws NullPointerException if {@code reference} is null
    */
   public static <T> T checkNotNull(
-      T reference, @Nullable String errorMessageTemplate, @Nullable Object... errorMessageArgs) {
+      T reference, /*@Nullable*/ String errorMessageTemplate, /*@Nullable*/ Object... errorMessageArgs) {
     if (reference == null) {
       // If either of these parameters is null, the right thing happens anyway
       throw new NullPointerException(format(errorMessageTemplate, errorMessageArgs));
@@ -304,7 +308,7 @@ public final class Preconditions {
    * @throws IndexOutOfBoundsException if {@code index} is negative or is not less than {@code size}
    * @throws IllegalArgumentException if {@code size} is negative
    */
-  public static int checkElementIndex(int index, int size, @Nullable String desc) {
+  public static int checkElementIndex(int index, int size, /*@Nullable*/ String desc) {
     // Carefully optimized for execution by hotspot (explanatory comment above)
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException(badElementIndex(index, size, desc));
@@ -347,7 +351,7 @@ public final class Preconditions {
    * @throws IndexOutOfBoundsException if {@code index} is negative or is greater than {@code size}
    * @throws IllegalArgumentException if {@code size} is negative
    */
-  public static int checkPositionIndex(int index, int size, @Nullable String desc) {
+  public static int checkPositionIndex(int index, int size, /*@Nullable*/ String desc) {
     // Carefully optimized for execution by hotspot (explanatory comment above)
     if (index < 0 || index > size) {
       throw new IndexOutOfBoundsException(badPositionIndex(index, size, desc));
@@ -406,7 +410,8 @@ public final class Preconditions {
    *     to strings using {@link String#valueOf(Object)}. Arguments can be null.
    */
   // Note that this is somewhat-improperly used from Verify.java as well.
-  static String format(String template, @Nullable Object... args) {
+  @VisibleForTesting
+  static String format(String template, /*@Nullable*/ Object... args) {
     template = String.valueOf(template); // null -> "null"
 
     // start substituting the arguments into the '%s' placeholders

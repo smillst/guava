@@ -16,6 +16,10 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.dataflow.qual.SideEffectFree;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -35,15 +39,18 @@ import javax.annotation.Nullable;
  *
  * @author Louis Wasserman
  */
+@AnnotatedFor({"nullness"})
 @GwtCompatible
 abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
+  @Pure
   @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
+  @Pure
   @Override
-  public boolean containsValue(@Nullable Object value) {
+  public boolean containsValue(/*@Nullable*/ Object value) {
     for (Collection<V> collection : asMap().values()) {
       if (collection.contains(value)) {
         return true;
@@ -53,25 +60,26 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
     return false;
   }
 
+  @Pure
   @Override
-  public boolean containsEntry(@Nullable Object key, @Nullable Object value) {
+  public boolean containsEntry(/*@Nullable*/ Object key, /*@Nullable*/ Object value) {
     Collection<V> collection = asMap().get(key);
     return collection != null && collection.contains(value);
   }
 
   @Override
-  public boolean remove(@Nullable Object key, @Nullable Object value) {
+  public boolean remove(/*@Nullable*/ Object key, /*@Nullable*/ Object value) {
     Collection<V> collection = asMap().get(key);
     return collection != null && collection.remove(value);
   }
 
   @Override
-  public boolean put(@Nullable K key, @Nullable V value) {
+  public boolean put(/*@Nullable*/ K key, /*@Nullable*/ V value) {
     return get(key).add(value);
   }
 
   @Override
-  public boolean putAll(@Nullable K key, Iterable<? extends V> values) {
+  public boolean putAll(/*@Nullable*/ K key, Iterable<? extends V> values) {
     checkNotNull(values);
     // make sure we only call values.iterator() once
     // and we only call get(key) if values is nonempty
@@ -94,7 +102,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   }
 
   @Override
-  public Collection<V> replaceValues(@Nullable K key, Iterable<? extends V> values) {
+  public Collection<V> replaceValues(/*@Nullable*/ K key, Iterable<? extends V> values) {
     checkNotNull(values);
     Collection<V> result = removeAll(key);
     putAll(key, values);
@@ -103,6 +111,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
 
   private transient Collection<Entry<K, V>> entries;
 
+  @SideEffectFree
   @Override
   public Collection<Entry<K, V>> entries() {
     Collection<Entry<K, V>> result = entries;
@@ -128,31 +137,46 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
     public Iterator<Entry<K, V>> iterator() {
       return entryIterator();
     }
+
+  @Override
+  public boolean remove(/*@Nullable*/ Object arg0) { return super.remove(arg0); }
+
+  @Pure
+  @Override
+  public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
   }
 
   @WeakOuter
   private class EntrySet extends Entries implements Set<Entry<K, V>> {
+    @Pure
     @Override
     public int hashCode() {
       return Sets.hashCodeImpl(this);
     }
 
+    @Pure
     @Override
-    public boolean equals(@Nullable Object obj) {
+    public boolean equals(/*@Nullable*/ Object obj) {
       return Sets.equalsImpl(this, obj);
     }
+
+  @Pure
+  @Override
+  public boolean contains(/*@org.checkerframework.checker.nullness.qual.Nullable*/ Object arg0) { return super.contains(arg0); }
   }
 
   abstract Iterator<Entry<K, V>> entryIterator();
 
   private transient Set<K> keySet;
 
+  @SideEffectFree
   @Override
   public Set<K> keySet() {
     Set<K> result = keySet;
     return (result == null) ? keySet = createKeySet() : result;
   }
 
+  @SideEffectFree
   Set<K> createKeySet() {
     return new Maps.KeySet<K, Collection<V>>(asMap());
   }
@@ -171,6 +195,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
 
   private transient Collection<V> values;
 
+  @SideEffectFree
   @Override
   public Collection<V> values() {
     Collection<V> result = values;
@@ -188,13 +213,15 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
       return valueIterator();
     }
 
+    @Pure
     @Override
     public int size() {
       return AbstractMultimap.this.size();
     }
 
+    @Pure
     @Override
-    public boolean contains(@Nullable Object o) {
+    public boolean contains(/*@Nullable*/ /*@org.checkerframework.checker.nullness.qual.Nullable*/ Object o) {
       return AbstractMultimap.this.containsValue(o);
     }
 
@@ -220,8 +247,9 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
 
   // Comparison and hashing
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     return Multimaps.equalsImpl(this, object);
   }
 
@@ -233,6 +261,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
    *
    * @see Map#hashCode
    */
+  @Pure
   @Override
   public int hashCode() {
     return asMap().hashCode();
@@ -244,6 +273,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
    *
    * @return a string representation of the multimap
    */
+  @Pure
   @Override
   public String toString() {
     return asMap().toString();

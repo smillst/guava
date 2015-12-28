@@ -16,6 +16,9 @@
 
 package com.google.common.collect;
 
+import org.checkerframework.dataflow.qual.Pure;
+import org.checkerframework.framework.qual.AnnotatedFor;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
@@ -26,6 +29,7 @@ import java.util.Iterator;
 import javax.annotation.Nullable;
 
 /** An ordering that uses the reverse of a given order. */
+@AnnotatedFor({"nullness"})
 @GwtCompatible(serializable = true)
 final class ReverseOrdering<T> extends Ordering<T> implements Serializable {
   final Ordering<? super T> forwardOrder;
@@ -34,6 +38,7 @@ final class ReverseOrdering<T> extends Ordering<T> implements Serializable {
     this.forwardOrder = checkNotNull(forwardOrder);
   }
 
+  @Pure
   @Override
   public int compare(T a, T b) {
     return forwardOrder.compare(b, a);
@@ -87,13 +92,15 @@ final class ReverseOrdering<T> extends Ordering<T> implements Serializable {
     return forwardOrder.min(iterable);
   }
 
+  @Pure
   @Override
   public int hashCode() {
     return -forwardOrder.hashCode();
   }
 
+  @Pure
   @Override
-  public boolean equals(@Nullable Object object) {
+  public boolean equals(/*@Nullable*/ Object object) {
     if (object == this) {
       return true;
     }
@@ -104,6 +111,7 @@ final class ReverseOrdering<T> extends Ordering<T> implements Serializable {
     return false;
   }
 
+  @Pure
   @Override
   public String toString() {
     return forwardOrder + ".reverse()";
