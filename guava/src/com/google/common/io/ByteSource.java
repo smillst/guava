@@ -558,11 +558,7 @@ public abstract class ByteSource {
     }
 
     @Override
-    @SuppressWarnings({
-        // off is at most equal to unslicedSize and length is non-negative.
-        "value:return",
-        // poly + inference problem.
-        "type.arguments.not.inferred"})
+     @SuppressWarnings("value:return") // off is at most equal to unslicedSize and length is non-negative
     public Optional<@NonNegative Long> sizeIfKnown() {
       Optional<@NonNegative Long> optionalUnslicedSize = ByteSource.this.sizeIfKnown();
       if (optionalUnslicedSize.isPresent()) {
