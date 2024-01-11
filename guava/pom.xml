@@ -208,6 +208,7 @@
               <target>8</target>
               <compilerArgs combine.children="append">
                 <arg>-Awarns</arg>  <!-- Treat checker errors as warnings. -->
+                <arg>-AconvertTypeArgInferenceCrashToWarning=false</arg> <!-- Crash when type infernece crashes.-->
               </compilerArgs>
             </configuration>
           </execution>
